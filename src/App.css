@@ -1,0 +1,64 @@
+body {
+  background-color: #13141A;
+  color: #B0AB92;
+  padding: 20px;
+}
+
+.App {
+  color: #fff;
+}
+
+
+
+.tile {
+  padding: 20px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+}
+
+.app-header {
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 20px;
+}
+
+.logo-lookup {
+  
+}
+
+.current-conditions {
+  display: inline-block;
+  flex-grow: 2;
+}
+
+.current-conditions > * {
+  display: inline-block;
+  margin-right: 20px;
+}
+
+.forecast {
+  display: block;
+}
+
+.forecast ul {
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+  align-content: flex-start; 
+  gap: 20px;
+}
+
+.forecast li {
+  padding: 0 20px 0 20px;
+  border-radius: 15px;
+  border: 2px solid #929AB0;
+  max-width: 200px;
+  text-align: center;
+}
+
+h1.temp {
+  color: #929AB0;
+}
