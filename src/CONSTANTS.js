@@ -16,3 +16,21 @@ export const API_STATUS = {
     HOURLY: 'Hourly'
   }
 }
+
+export const MSG_PENDING = {
+  CURRENT: 'Enter your city & state or zip code to see current weather',
+  DAILY: 'Enter your city & state or zip code to see your daily forecast',
+  HOURLY: 'Enter your city & state or zip code to see your hourly forecast'
+}
+
+export const MSG_LOADING = {
+  CURRENT: 'Getting current weather...',
+  DAILY: 'Getting your daily forecast...',
+  HOURLY: 'Getting your hourly forecast...'
+}
+
+export const MSG_ERROR = {
+  CURRENT: 'There was a problem getting the current weather',
+  DAILY: 'There was a problem getting the forecast',
+  HOURLY: 'There was a problem getting the hourly forecast'
+}

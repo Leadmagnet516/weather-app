@@ -4,7 +4,12 @@ import utils from './utils';
 import LookupForm from './ui/LookupForm';
 import CurrentConditions from './ui/CurrentConditions';
 import Forecast from './ui/Forecast';
-import { API_STATUS } from './CONSTANTS';
+import {
+  API_STATUS,
+  MSG_PENDING,
+  MSG_LOADING,
+  MSG_ERROR
+ } from './CONSTANTS';
 const { friendlyTimeString } = utils;
 
 const DEFAULT_WEATHER = {
@@ -16,26 +21,26 @@ const MAX_DAILY_ITEMS = 7;
 const MAX_HOURLY_ITEMS = 12;
 
 export default function App() {
-  // ERROR HANDLING
-  const [ currentWeatherError, setCurrentWeatherError ] = useState('');
-  const [ dailyForecastError, setDailyForecastError ] = useState('');
-  const [ hourlyForecastError, setHourlyForecastError ] = useState('');
+  // ERROR/MESSAGING HANDLING
+  const [ currentWeatherMessage, setCurrentWeatherMessage ] = useState(MSG_PENDING.CURRENT);
+  const [ dailyForecastMessage, setDailyForecastMessage ] = useState(MSG_PENDING.DAILY);
+  const [ hourlyForecastMessage, setHourlyForecastMessage ] = useState(MSG_PENDING.HOURLY);
 
   const handleError = failedOn => {
     switch(failedOn) {
       case API_STATUS.FAILED_ON.GEOCODE :
       case API_STATUS.FAILED_ON.WEATHER :
       default :
-        setCurrentWeatherError('There was a problem getting the current weather');
-        setDailyForecastError('There was a problem getting the forecast');
-        setHourlyForecastError('There was a problem getting the hourly forecast');
+        setCurrentWeatherMessage(MSG_ERROR.CURRENT);
+        setDailyForecastMessage(MSG_ERROR.DAILY);
+        setHourlyForecastMessage(MSG_ERROR.HOURLY);
         break;
         case API_STATUS.FAILED_ON.HOURLY :
-          setCurrentWeatherError('There was a problem getting the current weather');
-          setHourlyForecastError('There was a problem getting the hourly forecast');
+          setCurrentWeatherMessage(MSG_ERROR.CURRENT);
+          setHourlyForecastMessage(MSG_ERROR.HOURLY);
           break;
       case API_STATUS.FAILED_ON.DAILY :
-        setDailyForecastError('There was a problem getting the forecast');
+        setDailyForecastMessage(MSG_ERROR.DAILY);
         break;
     }
   }
@@ -44,14 +49,14 @@ export default function App() {
   const [ currentWeather, setCurrentWeather ] = useState(DEFAULT_WEATHER);
   const [ dailyForecast, setDailyForecast ] = useState([]);
   const [ hourlyForecast, setHourlyForecast ] = useState([]);
-  
+
   const handleCurrentWeather = hourly => {
     try {
       setCurrentWeather({
         desc: hourly.periods[0].shortForecast,
         temp: hourly.periods[0].temperature,
       });
-      setCurrentWeatherError('');
+      setCurrentWeatherMessage('');
     } catch(err) {
       handleError(API_STATUS.FAILED_ON.HOURLY);
     }    
@@ -69,7 +74,7 @@ export default function App() {
         })
         return dailyArray;
       })
-      setDailyForecastError('');
+      setDailyForecastMessage('');
     } catch(err) {
       handleError(API_STATUS.FAILED_ON.DAILY);
     }  
@@ -87,14 +92,21 @@ export default function App() {
         })
         return hourlyArray;
       })
-      setHourlyForecastError('');
+      setHourlyForecastMessage('');
     } catch(err) {
       handleError(API_STATUS.FAILED_ON.HOURLY);
     }  
   }
 
-  const handleWeatherDataLoaded = weatherData => {
+  const handleWeatherData = weatherData => {
     switch(weatherData.status) {
+      case API_STATUS.PENDING :
+        break;
+      case API_STATUS.LOADING :
+        setCurrentWeatherMessage(MSG_LOADING.CURRENT);
+        setDailyForecastMessage(MSG_LOADING.DAILY);
+        setHourlyForecastMessage(MSG_LOADING.HOURLY);
+        break;
       case API_STATUS.OK :
         handleCurrentWeather(weatherData.hourly);
         handleDailyForecast(weatherData.daily);
@@ -123,12 +135,12 @@ export default function App() {
       <div className="app-header">
         <div className="logo-lookup">
           <h1>RainMagnet</h1>
-          <LookupForm handleWeatherDataLoaded={handleWeatherDataLoaded} />
+          <LookupForm handleWeatherData={handleWeatherData} />
         </div>
-        <CurrentConditions dataset={currentWeather} error={currentWeatherError} />
+        <CurrentConditions dataset={currentWeather} message={currentWeatherMessage} />
       </div>
-      <Forecast key="dailyForecast" title="Daily Forecast" dataset={dailyForecast} error={dailyForecastError} />
-      <Forecast key="hourlyForecast" title="Hourly Forecast" dataset={hourlyForecast} error={hourlyForecastError}/>
+      <Forecast key="dailyForecast" title="Daily Forecast" dataset={dailyForecast} message={dailyForecastMessage} />
+      <Forecast key="hourlyForecast" title="Hourly Forecast" dataset={hourlyForecast} message={hourlyForecastMessage}/>
     </div>
   );
 }

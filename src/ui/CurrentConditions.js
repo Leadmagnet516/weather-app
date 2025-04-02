@@ -1,8 +1,8 @@
-export default function CurrentConditions( { dataset, error }) {
+export default function CurrentConditions( { dataset, message }) {
   return (
     <div className="tile current-conditions">
-    { error ? (
-      <p>{error}</p>
+    { message ? (
+      <p>{message}</p>
     ) : (
       <>
         <h2>Currently</h2>

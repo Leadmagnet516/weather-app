@@ -1,12 +1,12 @@
 import ForecastItem from './ForecastItem';
 
-export default function Forecast( { title, dataset, error } ) {
+export default function Forecast( { title, dataset, message } ) {
   return (
     <div className="forecast">
       <h2>{title}</h2>
       <div className="tile">
-        { error ? (
-          <p>{error}</p>
+        { message ? (
+          <p>{message}</p>
         ) : (
         <ul>
           {
