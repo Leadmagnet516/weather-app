@@ -3,14 +3,23 @@ import { API_KEY, API_STATUS, GEOCODE_API_URL, WEATHER_API_URL } from './CONSTAN
 const fetchJson = async url => {
   const response = await fetch(url);
   const responseJson = await response.json();
-  return responseJson;
+  if (response.ok) {
+    return responseJson;
+  }
+
+  return API_STATUS.ERROR;
 }
 
 const fetchWeatherByLocation = async (previousState, formData) => {
+    const weatherData = {
+      status: API_STATUS.OK // Default to OK status; can downgrade as needed
+    };
+
     // Get lat/long from geocode API
     let latLong;
     try {
       const geo = await utils.fetchJson(`${GEOCODE_API_URL}?address=${formData.get('location')}&key=${API_KEY}`);
+      weatherData.address = geo.results[0].formatted_address;
       latLong = `${geo.results[0].geometry.location.lat},${geo.results[0].geometry.location.lng}`;
     } catch(err) {
       return {
@@ -31,11 +40,6 @@ const fetchWeatherByLocation = async (previousState, formData) => {
         fail: API_STATUS.FAILED_ON.WEATHER
       }
     }
-
-    // Compile weather data from properties attribute of forecast API responses
-    const weatherData = {
-      status: API_STATUS.OK
-    };
 
     // Get hourly data from forecast APIs (hourly is needed for current conditions with this API)
     let hourlyForecastJson;
@@ -72,10 +76,10 @@ const fetchWeatherByLocation = async (previousState, formData) => {
 const friendlyTimeString = timeString => {
   const timeRegex = /T\d{2}/;
   let hour = parseInt(timeString.match(timeRegex)[0].replace('T', ''));
-  const meridian = hour > 12 ? 'PM' : 'AM';
+  const meridian = hour > 12 ? 'pm' : 'am';
   hour = hour > 12 ? hour - 12 : hour;
   hour = hour === 0 ? 12 : hour;
-  return `${hour} ${meridian}`;
+  return `${hour}${meridian}`;
 }
 
 const utils = {

@@ -77,7 +77,7 @@ describe('utils', () => {
     test(`friendlyTimeString returns a string of 1-2 numerals, with no leading zeroes, followed by "AM" or "PM"`, () => {
       const unfriendly = '2025-04-02T09:00:00-04:00';
       const friendly = utils.friendlyTimeString(unfriendly)
-      const regex = /([1-9]|[1-9]\d) (AM|PM)/
+      const regex = /([1-9]|[1-9]\d)(am|pm)/
       expect(friendly.match(regex)[0].length).toBe(friendly.length);
     })
   })

@@ -1,11 +1,17 @@
+import TemperatureDisplay from './TemperatureDisplay';
+
 export default function ForecastItem( props ) {
-  const { name, temp, desc } = props.period;
+  const { name, temp, desc, icon } = props.period;
+
+  const iconUrl = icon ? icon.replace('small', 'large').replace('medium', 'large') : undefined;
 
   return (
-    <li className='forecast-item'>
-      <h2>{name}</h2>
-      <h1>{temp}&deg; F</h1>
-      <p>{desc}</p>
+    <li>
+      <div className='forecast-item'>
+        <span className="forecast-item-heading">{name}</span>
+        <TemperatureDisplay temp={temp} />
+        <span class="forecast-item-desc">{desc}</span>
+      </div>
     </li>
   )
 }

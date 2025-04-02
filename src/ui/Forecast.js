@@ -4,7 +4,7 @@ export default function Forecast( { title, dataset, message } ) {
   return (
     <div className="forecast">
       <h2>{title}</h2>
-      <div className="tile">
+      <div className="tile scrollable">
         { message ? (
           <p>{message}</p>
         ) : (

@@ -1,13 +1,18 @@
+import TemperatureDisplay from './TemperatureDisplay';
+
 export default function CurrentConditions( { dataset, message }) {
+  const { temp, desc } = dataset;
   return (
     <div className="tile current-conditions">
     { message ? (
       <p>{message}</p>
     ) : (
       <>
-        <h2>Currently</h2>
-        <h1>{dataset.temp}&deg; F</h1>
-        <p>{dataset.desc}</p>
+        <span className="current-conditions-heading">current conditions </span>
+        <div className="current-conditions-weather">
+          <TemperatureDisplay temp={temp} />
+          <p>{desc}</p>
+        </div>
       </>
     )}
     </div>

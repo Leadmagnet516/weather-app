@@ -1,7 +1,7 @@
 import './App.css';
 import { useState } from 'react';
 import utils from './utils';
-import LookupForm from './ui/LookupForm';
+import LogoLookup from './ui/LogoLookup';
 import CurrentConditions from './ui/CurrentConditions';
 import Forecast from './ui/Forecast';
 import {
@@ -27,6 +27,7 @@ export default function App() {
   const [ hourlyForecastMessage, setHourlyForecastMessage ] = useState(MSG_PENDING.HOURLY);
 
   const handleError = failedOn => {
+    console.log('handleError', failedOn);
     switch(failedOn) {
       case API_STATUS.FAILED_ON.GEOCODE :
       case API_STATUS.FAILED_ON.WEATHER :
@@ -50,11 +51,13 @@ export default function App() {
   const [ dailyForecast, setDailyForecast ] = useState([]);
   const [ hourlyForecast, setHourlyForecast ] = useState([]);
 
-  const handleCurrentWeather = hourly => {
+  const handleCurrentWeather = (address, hourly) => {
     try {
       setCurrentWeather({
+        address,
         desc: hourly.periods[0].shortForecast,
         temp: hourly.periods[0].temperature,
+        icon: hourly.periods[0].icon
       });
       setCurrentWeatherMessage('');
     } catch(err) {
@@ -65,11 +68,12 @@ export default function App() {
   const handleDailyForecast = daily => {
     try {
       setDailyForecast(() => {
-        const dailyArray = daily.periods.slice(0, MAX_DAILY_ITEMS - 1).map(period => {
+        const dailyArray = daily.periods.map(period => {
           return {
-            name: period.name,
+            name: period.name.toLowerCase(),
             temp: period.temperature,
             desc: period.shortForecast,
+            icon: period.icon
           }
         })
         return dailyArray;
@@ -101,6 +105,8 @@ export default function App() {
   const handleWeatherData = weatherData => {
     switch(weatherData.status) {
       case API_STATUS.PENDING :
+      default :
+        /* noop */
         break;
       case API_STATUS.LOADING :
         setCurrentWeatherMessage(MSG_LOADING.CURRENT);
@@ -108,7 +114,8 @@ export default function App() {
         setHourlyForecastMessage(MSG_LOADING.HOURLY);
         break;
       case API_STATUS.OK :
-        handleCurrentWeather(weatherData.hourly);
+        console.log(weatherData.hourly);
+        handleCurrentWeather(weatherData.address, weatherData.hourly);
         handleDailyForecast(weatherData.daily);
         handleHourlyForecast(weatherData.hourly);
         break;
@@ -123,20 +130,13 @@ export default function App() {
       case API_STATUS.FAIL :
         handleError(weatherData.failedOn);
         break;
-      case API_STATUS.PENDING :
-      default :
-        /* noop */
-        break;
     }
   }
 
   return (
     <div className="App">
       <div className="app-header">
-        <div className="logo-lookup">
-          <h1>RainMagnet</h1>
-          <LookupForm handleWeatherData={handleWeatherData} />
-        </div>
+        <LogoLookup handleWeatherData={handleWeatherData} address={currentWeather.address} />
         <CurrentConditions dataset={currentWeather} message={currentWeatherMessage} />
       </div>
       <Forecast key="dailyForecast" title="Daily Forecast" dataset={dailyForecast} message={dailyForecastMessage} />
