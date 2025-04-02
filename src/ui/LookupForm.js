@@ -1,9 +1,10 @@
 import { useActionState, useEffect } from 'react';
+import { API_STATUS} from '../CONSTANTS';
 import utils from '../utils';
 const { fetchWeatherByLocation }  = utils;
 
 export default function LookupForm( { handleWeatherDataLoaded } ) {
-  const [ weatherData, formAction ] = useActionState(fetchWeatherByLocation, {});
+  const [ weatherData, formAction ] = useActionState(fetchWeatherByLocation, { status: API_STATUS.PENDING });
 
   useEffect(() => {
     if (Object.keys(weatherData).length > 0) {
