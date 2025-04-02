@@ -1,9 +1,10 @@
 import './App.css';
 import { useState } from 'react';
-import { friendlyTimeString } from './utils';
+import utils from './utils';
 import LookupForm from './ui/LookupForm';
 import CurrentConditions from './ui/CurrentConditions';
 import Forecast from './ui/Forecast';
+const { friendlyTimeString } = utils;
 
 const DEFAULT_WEATHER = {
   temp: '',
@@ -51,7 +52,7 @@ export default function App() {
     <div className="App">
       <div className="app-header">
         <div className="logo-lookup">
-          <h1>Rainwalker</h1>
+          <h1>RainMagnet</h1>
           <LookupForm handleWeatherDataLoaded={handleWeatherDataLoaded} />
         </div>
         <CurrentConditions dataset={currentWeather} />

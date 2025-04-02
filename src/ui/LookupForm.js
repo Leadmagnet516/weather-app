@@ -1,5 +1,6 @@
 import { useActionState, useEffect } from 'react';
-import { fetchWeatherByLocation } from '../utils';
+import utils from '../utils';
+const { fetchWeatherByLocation }  = utils;
 
 export default function LookupForm( { handleWeatherDataLoaded } ) {
   const [ weatherData, formAction ] = useActionState(fetchWeatherByLocation, {});
@@ -11,7 +12,7 @@ export default function LookupForm( { handleWeatherDataLoaded } ) {
   }, [weatherData])
   return (
     <form action={formAction}>
-      <input name="location" type="text" placeholder="Enter a location"  value="Birdsboro, PA"  />
+      <input name="location" type="text" placeholder="Enter a location"  />
       <button type="submit">Look Up</button>
       <p>OR</p>
       <button>Use My Location</button>
