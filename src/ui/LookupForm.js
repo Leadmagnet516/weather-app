@@ -3,7 +3,7 @@ import { API_STATUS} from '../CONSTANTS';
 import utils from '../utils';
 const { fetchWeatherByLocation } = utils;
 
-export default function LookupForm( { handleWeatherData } ) {
+export default function LookupForm( { handleWeatherData, message } ) {
   const [ weatherDataFromApis, formAction ] = useActionState(fetchWeatherByLocation, { status: API_STATUS.PENDING });
 
   const handleSubmitClicked = () => {
@@ -12,7 +12,7 @@ export default function LookupForm( { handleWeatherData } ) {
 
   useEffect(() => {
     handleWeatherData(weatherDataFromApis);
-  }, [handleWeatherData, weatherDataFromApis])
+  }, [weatherDataFromApis])
 
   return (
     <div className="lookup-form">
@@ -22,6 +22,7 @@ export default function LookupForm( { handleWeatherData } ) {
         { /*<p>OR</p>
         <button>Use My Location</button> */}
       </form>
+      <span className="lookup-form-error">{message}</span>
     </div>
   )
 }

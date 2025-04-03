@@ -2,7 +2,7 @@ import LookupForm from './LookupForm';
 import logo from '../images/logo.png';
 import { useEffect, useState } from 'react';
 
-export default function LogoLookup( {handleWeatherData, address }) {
+export default function LogoLookup( {handleWeatherData, address, message }) {
   const [ editing, setEditing ] = useState(true);
 
   const toggleEditing = () => {
@@ -20,7 +20,7 @@ export default function LogoLookup( {handleWeatherData, address }) {
       <img src={logo} alt="RAINFRONT" />
       <>
       { editing ?
-        <LookupForm handleWeatherData={handleWeatherData} /> 
+        <LookupForm handleWeatherData={handleWeatherData} message={message} /> 
         :
         <div className="logo-lookup-current">
           Showing weather for {address} &nbsp;

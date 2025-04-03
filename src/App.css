@@ -38,6 +38,10 @@ body {
   border-radius: 20px;
 }
 
+.tile-message {
+  font-size: 1rem;
+}
+
 .full-width-centered {
   width: 94%;
   margin: 0 auto;
@@ -95,6 +99,11 @@ body {
   border-radius: 8px;
   padding: 4px 8px 4px 8px;
   margin-right: 10px;
+}
+
+.lookup-form-error {
+  font-size: 1rem;
+  color: #f66;
 }
 
 /* CURRENT CONDITIONS */

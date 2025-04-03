@@ -14,6 +14,11 @@ export const API_STATUS = {
     FORECAST: 'Forecast',
     DAILY: 'Daily',
     HOURLY: 'Hourly'
+  },
+  FAILURE_TYPE: {
+    BAD_REQUEST: 'BadRequest',
+    NO_RESULTS: 'NoResults',
+    UNKNOWN: 'Unknown'
   }
 }
 
@@ -30,7 +35,7 @@ export const MSG_LOADING = {
 }
 
 export const MSG_ERROR = {
-  CURRENT: 'There was a problem getting the current weather',
+  CURRENT: 'There was a problem getting the weather',
   DAILY: 'There was a problem getting the forecast',
   HOURLY: 'There was a problem getting the hourly forecast'
 }

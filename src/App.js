@@ -21,13 +21,23 @@ const MAX_HOURLY_ITEMS = 12;
 
 export default function App() {
   // ERROR/MESSAGING HANDLING
+  const [ lookupMessage, setLookupMessage ] = useState('');
   const [ currentWeatherMessage, setCurrentWeatherMessage ] = useState(MSG_PENDING.CURRENT);
   const [ dailyForecastMessage, setDailyForecastMessage ] = useState(MSG_PENDING.DAILY);
   const [ hourlyForecastMessage, setHourlyForecastMessage ] = useState(MSG_PENDING.HOURLY);
 
-  const handleError = failedOn => {
+  const handleError = (failedOn, reason) => {
     switch(failedOn) {
       case API_STATUS.FAILED_ON.GEOCODE :
+        if (reason === API_STATUS.FAILURE_TYPE.BAD_REQUEST) {
+          setLookupMessage('Please enter a valid city & state or zipcode')
+        } else if (reason === API_STATUS.FAILURE_TYPE.NO_RESULTS) {
+          setLookupMessage('No results found')
+        }
+        setCurrentWeatherMessage(MSG_ERROR.CURRENT);
+        setDailyForecastMessage(MSG_ERROR.DAILY);
+        setHourlyForecastMessage(MSG_ERROR.HOURLY);
+        break;
       case API_STATUS.FAILED_ON.WEATHER :
       default :
         setCurrentWeatherMessage(MSG_ERROR.CURRENT);
@@ -101,6 +111,8 @@ export default function App() {
   }
 
   const handleWeatherData = weatherData => {
+    setLookupMessage('');
+    
     switch(weatherData.status) {
       case API_STATUS.PENDING :
       default :
@@ -117,15 +129,22 @@ export default function App() {
         handleHourlyForecast(weatherData.hourly);
         break;
       case API_STATUS.MIXED :
-        if (weatherData.hourly !== API_STATUS.ERROR) {
-          handleCurrentWeather(weatherData.hourly);
-          handleHourlyForecast(weatherData.hourly);
-        } else if (weatherData.daily !== API_STATUS.ERROR) {
+        if (weatherData.daily === API_STATUS.ERROR) {
+          setDailyForecastMessage(MSG_ERROR.DAILY);
+        } else {
           handleDailyForecast(weatherData.daily);
+        }
+
+        if (weatherData.hourly === API_STATUS.ERROR) {
+          setCurrentWeatherMessage(MSG_ERROR.CURRENT);
+          setHourlyForecastMessage(MSG_ERROR.HOURLY);
+        } else {
+          handleCurrentWeather(weatherData.address, weatherData.hourly);
+          handleHourlyForecast(weatherData.hourly);
         }
         break;
       case API_STATUS.FAIL :
-        handleError(weatherData.failedOn);
+        handleError(weatherData.failedOn, weatherData.reason);
         break;
     }
   }
@@ -134,7 +153,7 @@ export default function App() {
     <div className="App">
       <div className="app-content-container">
         <div className="app-header full-width-centered">
-          <LogoLookup handleWeatherData={handleWeatherData} address={currentWeather.address} />
+          <LogoLookup handleWeatherData={handleWeatherData} address={currentWeather.address} message={lookupMessage} />
           <CurrentConditions dataset={currentWeather} message={currentWeatherMessage} />
         </div>
         <Forecast key="dailyForecast" title="Next Few Days" dataset={dailyForecast} message={dailyForecastMessage} />

@@ -16,7 +16,7 @@ export default function Forecast( { title, dataset, message } ) {
       </div>
       <div className="tile scrollable">
         { message ? (
-          <p>{message}</p>
+          <span className="tile-message">{message}</span>
         ) : (
         <ul>
           {
