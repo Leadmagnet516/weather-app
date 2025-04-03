@@ -18,13 +18,12 @@ export default function LogoLookup( {handleWeatherData, address }) {
   return (
     <div className="logo-lookup">
       <img src={logo} alt="RAINFRONT" />
-      <span className="logo-lookup-version">v1.0.0 by Leadmagnet516</span>
       <>
       { editing ?
         <LookupForm handleWeatherData={handleWeatherData} /> 
         :
         <div className="logo-lookup-current">
-          showing weather for {address} &nbsp;
+          Showing weather for {address} &nbsp;
           <button onClick={toggleEditing}>Change</button>
         </div>
       }

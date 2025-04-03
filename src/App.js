@@ -17,7 +17,6 @@ const DEFAULT_WEATHER = {
   desc: ''
 };
 
-const MAX_DAILY_ITEMS = 7;
 const MAX_HOURLY_ITEMS = 12;
 
 export default function App() {
@@ -27,7 +26,6 @@ export default function App() {
   const [ hourlyForecastMessage, setHourlyForecastMessage ] = useState(MSG_PENDING.HOURLY);
 
   const handleError = failedOn => {
-    console.log('handleError', failedOn);
     switch(failedOn) {
       case API_STATUS.FAILED_ON.GEOCODE :
       case API_STATUS.FAILED_ON.WEATHER :
@@ -54,7 +52,7 @@ export default function App() {
   const handleCurrentWeather = (address, hourly) => {
     try {
       setCurrentWeather({
-        address,
+        address: address.replace(/ \d{5}/, ''),
         desc: hourly.periods[0].shortForecast,
         temp: hourly.periods[0].temperature,
         icon: hourly.periods[0].icon
@@ -70,7 +68,7 @@ export default function App() {
       setDailyForecast(() => {
         const dailyArray = daily.periods.map(period => {
           return {
-            name: period.name.toLowerCase(),
+            name: period.name,
             temp: period.temperature,
             desc: period.shortForecast,
             icon: period.icon
@@ -139,8 +137,8 @@ export default function App() {
         <LogoLookup handleWeatherData={handleWeatherData} address={currentWeather.address} />
         <CurrentConditions dataset={currentWeather} message={currentWeatherMessage} />
       </div>
-      <Forecast key="dailyForecast" title="Daily Forecast" dataset={dailyForecast} message={dailyForecastMessage} />
-      <Forecast key="hourlyForecast" title="Hourly Forecast" dataset={hourlyForecast} message={hourlyForecastMessage}/>
+      <Forecast key="dailyForecast" title="Next Few Days" dataset={dailyForecast} message={dailyForecastMessage} />
+      <Forecast key="hourlyForecast" title="Hourly" dataset={hourlyForecast} message={hourlyForecastMessage}/>
     </div>
   );
 }

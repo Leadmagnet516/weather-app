@@ -15,11 +15,13 @@ export default function LookupForm( { handleWeatherData } ) {
   }, [weatherDataFromApis])
 
   return (
-    <form action={formAction}>
-      <input name="location" type="text" placeholder="Enter a location"  />
-      <button type="submit" onClick={handleSubmitClicked}>Look Up</button>
-      { /*<p>OR</p>
-      <button>Use My Location</button> */}
-    </form>
+    <div className="lookup-form">
+      <form action={formAction}>
+        <input name="location" type="text" placeholder="Enter a location"  />
+        <button type="submit" onClick={handleSubmitClicked}>Search</button>
+        { /*<p>OR</p>
+        <button>Use My Location</button> */}
+      </form>
+    </div>
   )
 }
