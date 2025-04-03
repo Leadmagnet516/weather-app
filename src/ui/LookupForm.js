@@ -24,8 +24,8 @@ export default function LookupForm( { handleWeatherData, message } ) {
     <div className="lookup-form-container">
       <form className="lookup-form" action={formAction}>
         <input name="location" type="text" placeholder="Enter a location"  />
-        <button type="submit" onClick={handleSubmitClicked}>Search</button>
-        <button type="button" onClick={handleUMLClicked}>Use My Location</button>
+        <div><button type="submit" onClick={handleSubmitClicked}>Search</button>
+        <button type="button" onClick={handleUMLClicked}>Use My Location</button></div>
       </form>
       <span className="lookup-form-error">{message}</span>
     </div>
