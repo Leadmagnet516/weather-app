@@ -52,7 +52,7 @@ export default function App() {
   const handleCurrentWeather = (address, hourly) => {
     try {
       setCurrentWeather({
-        address: address.replace(/ \d{5}/, ''),
+        address: address.replace(/ \d{5}/, ''), // Remove the zip code, if there is one, to save space
         desc: hourly.periods[0].shortForecast,
         temp: hourly.periods[0].temperature,
         icon: hourly.periods[0].icon
@@ -87,7 +87,7 @@ export default function App() {
       setHourlyForecast(() => {
         const hourlyArray = hourly.periods.slice(0, MAX_HOURLY_ITEMS - 1).map(period => {
           return {
-            name: `${friendlyTimeString(period.startTime)} - ${friendlyTimeString(period.endTime)}`,
+            name: `${friendlyTimeString(period.startTime)}-${friendlyTimeString(period.endTime)}`,
             temp: period.temperature,
             desc: period.shortForecast,
           }
@@ -132,12 +132,14 @@ export default function App() {
 
   return (
     <div className="App">
-      <div className="app-header">
-        <LogoLookup handleWeatherData={handleWeatherData} address={currentWeather.address} />
-        <CurrentConditions dataset={currentWeather} message={currentWeatherMessage} />
+      <div className="app-content-container">
+        <div className="app-header full-width-centered">
+          <LogoLookup handleWeatherData={handleWeatherData} address={currentWeather.address} />
+          <CurrentConditions dataset={currentWeather} message={currentWeatherMessage} />
+        </div>
+        <Forecast key="dailyForecast" title="Next Few Days" dataset={dailyForecast} message={dailyForecastMessage} />
+        <Forecast key="hourlyForecast" title="Hourly" dataset={hourlyForecast} message={hourlyForecastMessage}/>
       </div>
-      <Forecast key="dailyForecast" title="Next Few Days" dataset={dailyForecast} message={dailyForecastMessage} />
-      <Forecast key="hourlyForecast" title="Hourly" dataset={hourlyForecast} message={hourlyForecastMessage}/>
     </div>
   );
 }

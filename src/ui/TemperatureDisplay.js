@@ -5,11 +5,8 @@ export default function TemperatureDisplay( { temp }) {
 
   return (
     <div className="temperature-display">
-      <span className="temperature-numeral" style={{letterSpacing}}>
-        {temp}
-        <span className="temperature-unit">&deg; F</span>
-      </span>
-      
+      <span className="temperature-numeral" style={{letterSpacing}}>{temp}</span>
+      <span className="temperature-unit">&deg;F</span>
     </div>
   )
 }

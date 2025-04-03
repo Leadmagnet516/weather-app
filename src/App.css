@@ -1,7 +1,11 @@
+/* APP */
+html {
+  font-size: 16px;
+}
+
 body {
-  background-color: #13141A;
+  background-color: #000;
   color: #B0AB92;
-  padding: 40px;
 }
 
 .App {
@@ -11,10 +15,32 @@ body {
   color: #fff;
 }
 
+.app-content-container {
+  background-color: #13141A;
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  height: 100%;
+  padding: 3% 0;
+}
+
+.app-header {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+/* REUSABLE CLASSES */
 .tile {
   padding: 20px;
   background-color: #282930;
   border-radius: 20px;
+}
+
+.full-width-centered {
+  width: 94%;
+  margin: 0 auto;
 }
 
 .scrollable {
@@ -24,18 +50,11 @@ body {
   scrollbar-gutter:initial;
 }
 
-.app-header {
-  width: 100%;
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: space-between;
-  gap: 20px;
-}
-
 /* LOGO & LOOKUP SECTION */
 .logo-lookup {
   max-width: 628px;
   width: 50%;
+  font-size: 1.2rem;
 }
 
 .logo-lookup img {
@@ -46,7 +65,7 @@ body {
 }
 
 .logo-lookup-version {
-  font-size: .8em;
+  font-size: .8rem;
 }
 
 .logo-lookup-current {
@@ -56,7 +75,7 @@ body {
 
 .logo-lookup button {
   width: 104px;
-  font-size: 1em;
+  font-size: 1rem;
   background-color: #FF8157;
   font-family: "Nunito", sans-serif;
   font-weight: 600;
@@ -69,7 +88,7 @@ body {
 
 .lookup-form input {
   width: calc(100% - 150px);
-  font-size: 1em;
+  font-size: 1rem;
   background-color: #000;
   color: #FF8157;
   border: 2px solid #494C59;
@@ -89,8 +108,9 @@ body {
   position: absolute;
   left: 20px;
   top: 20px;
-  font-size: 1.5em;
-  line-height: 1em;
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1rem;
 }
 
 .current-conditions-weather {
@@ -100,6 +120,7 @@ body {
   align-items: flex-end;
   gap: 10px;
   top: 54px;
+  font-size: 1.2rem;
 }
 
 /* FORECAST */
@@ -114,6 +135,7 @@ body {
   align-items: flex-end;
   justify-content: space-between;
   margin-bottom: 10px;
+  font-size: 1rem;
 }
 
 .forecast-heading h2 {
@@ -127,16 +149,16 @@ body {
   display: flex;
   flex-flow: row nowrap;
   align-content: flex-start; 
-  gap: 20px;
+  gap: 1rem;
 }
 
 .forecast-item {
   position: relative;
-  padding: 20px 10px 20px 10px;
+  padding: 1em .5rem;
   border-radius: 15px;
   border: 2px solid #7DA2E8;
-  width: 200px;
-  height: 230px;
+  width: 11rem;
+  height: 14.5rem;
   text-align: center;
   overflow: hidden;
   transition: width ease-out .5s;
@@ -144,44 +166,54 @@ body {
 }
 
 .forecast-item.expanded {
-  width: 500px;
+  width: 36rem;
 }
 
 .forecast-item-heading {
   position: absolute;
-  top: 20px;
-  left: 20px;
-  width: calc(100% - 40px);
-  font-size: 1.4em;
-  line-height: 1em;
+  top: 2rem;
+  left: 1rem;
+  width: calc(100% - 2rem);
+  font-size: 1.4rem;
+  line-height: 1rem;
+  font-weight: 600;
+  transition: top ease-out .5s;
+}
+
+.forecast-item.expanded .forecast-item-heading {
+  top: 1rem;
 }
 
 .forecast-item .temperature-display {
   width: 100%;
   position: absolute;
-  top: 64px;
-  left: 0px;
+  top: 4.4rem;
+  left: 0;
   transition: top ease-out .5s;
 }
 
 .forecast-item.expanded .temperature-display {
-  top: 52px;
+  top: 2.5rem;
 }
 
 .forecast-item-desc {
-  width: 180px;
+  width: 10rem;
   position: absolute;
-  top: 164px;
-  left: 20px;
+  font-size: 1.2rem;
+  top: 10.4rem;
+  left: 1rem;
   transition: opacity ease-out .5s;
 }
 
 .forecast-item-detail {
-  width: 480px;
+  width: 35rem;
+  font-size: 1rem;
   position: absolute;
-  top: 136px;
-  left: 20px;
+  top: 7.5rem;
+  left: 1rem;
+  text-align: left;
   transition: opacity ease-out .5s;
+  overflow-y: scroll;
 }
 
 /* TEMPERATURE DISPLAY */
@@ -191,16 +223,106 @@ body {
 }
 
 .temperature-numeral {
-  line-height: .5em;
   font-family: "Alumni Sans Pinstripe", sans-serif;
   padding: 0;
-  font-size: 5em;
-  font-weight: bold;
+  font-size: 6rem;
+  line-height: 4.8rem;
   color: #FF8157;
 }
 
 .temperature-unit {
-  font-size: .5em;
-  vertical-align: super;
+  letter-spacing: .3rem;
+  font-size: 2rem;
+  vertical-align: top;
   color: #fff;
+}
+
+@media (max-width: 900px)  {
+  html {
+    font-size: 12px;
+  }
+
+  .tile {
+    padding: 10px;
+    border-radius: 15px;
+  }
+
+  .app-header {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .logo-lookup {
+    max-width: 628px;
+    width: 100%;
+    font-size: 1.5rem;
+  }
+
+  .logo-lookup button, .logo-lookup input {
+    font-size: 1.5rem;
+  }
+
+  .current-conditions {
+    width: 97%;
+    min-height: 0;
+    height: 90px;
+  }
+
+  .current-conditions-weather {
+    top: 40px;
+    gap: 0;
+  }
+  
+  .current-conditions-heading {
+    left: 15px;
+    top: 15px;
+  }
+
+  .forecast {
+    margin-top: 10px;
+  }
+
+  .forecast-item {
+    border: 1px solid #7DA2E8;
+    border-radius: 10px;
+    width: 9rem;
+    height: 13rem;
+  }
+  
+  .forecast-item.expanded {
+    width: 27.5rem;
+  }
+  
+  .forecast-item-heading {
+    top: 1.8rem;
+    left: .5rem;
+    width: calc(100% - 1rem);
+  }
+  
+  .forecast-item .temperature-display {
+    top: 4.5rem;
+  }
+
+  .forecast-item.expanded .forecast-item-heading {
+    top: 1rem;
+  }
+  
+  .forecast-item.expanded .temperature-display {
+    top: 2.4rem;
+  }
+  
+  .forecast-item-desc {
+    width: 8rem;
+    top: 10.4rem;
+    left: 1rem;
+  }
+  
+  .forecast-item-detail {
+    width: 27rem;
+    font-size: 1.1rem;
+    position: absolute;
+    top: 7.2rem;
+    left: 1rem;
+    transition: opacity ease-out .5s;
+  }
 }

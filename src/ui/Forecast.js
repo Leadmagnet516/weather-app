@@ -2,7 +2,7 @@ import ForecastItem from './ForecastItem';
 
 export default function Forecast( { title, dataset, message } ) {
   return (
-    <div className="forecast">
+    <div className="forecast full-width-centered">
       <div className="forecast-heading">
         <h2>{title}</h2>
         {
