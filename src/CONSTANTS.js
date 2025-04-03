@@ -18,7 +18,7 @@ export const API_STATUS = {
   FAILURE_TYPE: {
     BAD_REQUEST: 'BadRequest',
     NO_RESULTS: 'NoResults',
-    UNKNOWN: 'Unknown'
+    MISC: 'Miscellaneous'
   }
 }
 
