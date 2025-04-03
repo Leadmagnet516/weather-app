@@ -11,7 +11,7 @@ export default function CurrentConditions( { dataset, message }) {
         <span className="current-conditions-heading">Current conditions </span>
         <div className="current-conditions-weather">
           <TemperatureDisplay temp={temp} />
-          <p>{desc}</p>
+          <span>{desc}</span>
         </div>
       </>
     )}

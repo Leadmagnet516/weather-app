@@ -12,7 +12,7 @@ export default function LookupForm( { handleWeatherData } ) {
 
   useEffect(() => {
     handleWeatherData(weatherDataFromApis);
-  }, [weatherDataFromApis])
+  }, [handleWeatherData, weatherDataFromApis])
 
   return (
     <div className="lookup-form">

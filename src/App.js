@@ -70,8 +70,7 @@ export default function App() {
           return {
             name: period.name,
             temp: period.temperature,
-            desc: period.shortForecast,
-            icon: period.icon
+            desc: period.shortForecast
           }
         })
         return dailyArray;
@@ -112,7 +111,6 @@ export default function App() {
         setHourlyForecastMessage(MSG_LOADING.HOURLY);
         break;
       case API_STATUS.OK :
-        console.log(weatherData.hourly);
         handleCurrentWeather(weatherData.address, weatherData.hourly);
         handleDailyForecast(weatherData.daily);
         handleHourlyForecast(weatherData.hourly);

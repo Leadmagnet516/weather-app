@@ -76,7 +76,7 @@ const fetchWeatherByLocation = async (previousState, formData) => {
 const friendlyTimeString = timeString => {
   const timeRegex = /T\d{2}/;
   let hour = parseInt(timeString.match(timeRegex)[0].replace('T', ''));
-  const meridian = hour > 12 ? 'pm' : 'am';
+  const meridian = hour > 12 ? 'PM' : 'AM';
   hour = hour > 12 ? hour - 12 : hour;
   hour = hour === 0 ? 12 : hour;
   return `${hour}${meridian}`;
