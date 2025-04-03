@@ -1,10 +1,10 @@
 import { useActionState, useEffect } from 'react';
 import { API_STATUS} from '../CONSTANTS';
 import utils from '../utils';
-const { fetchWeatherByLocation, fetchWeatherBySearchString } = utils;
+const { fetchWeatherByLocation, fetchWeatherBySearchTerm } = utils;
 
 export default function LookupForm( { handleWeatherData, message } ) {
-  const [ weatherDataFromApis, formAction ] = useActionState(fetchWeatherBySearchString, { status: API_STATUS.PENDING });
+  const [ weatherDataFromApis, formAction ] = useActionState(fetchWeatherBySearchTerm, { status: API_STATUS.PENDING });
 
   const handleSubmitClicked = () => {
     handleWeatherData({ status: API_STATUS.LOADING })

@@ -6,6 +6,7 @@ const fetchJson = async url => {
 
   return {response, json};
 }
+
 const fetchGeolocationData = async () => {
   return new Promise((resolve, reject) => {
     if (navigator.geolocation) {
@@ -14,7 +15,6 @@ const fetchGeolocationData = async () => {
           latLong: `${location.coords.latitude},${location.coords.longitude}`
         })
       }, err => {
-        console.log(err);
         resolve({
           status: API_STATUS.FAIL,
           failedOn: API_STATUS.FAILED_ON.GEOLOCATION,
@@ -32,11 +32,11 @@ const fetchGeolocationData = async () => {
   
 }
 
-const fetchGeocodeData = async searchString => {
+const fetchGeocodeData = async searchTerm => {
   let data = {}
 
   try {
-    const geo = await utils.fetchJson(`${GEOCODE_API_URL}?address=${searchString}&key=${API_KEY}`);
+    const geo = await utils.fetchJson(`${GEOCODE_API_URL}?address=${searchTerm}&key=${API_KEY}`);
 
     // Check for identifiable issues with the geocode request or response
     switch (geo.json.status) {
@@ -190,9 +190,10 @@ const fetchWeatherData = async latLong => {
   return data;
 }
 
-const fetchWeatherBySearchString = async (previousState, formData) => {
-  const searchString = formData.get('location');
-  if (searchString.length === 0) {
+const fetchWeatherBySearchTerm = async (previousState, formData) => {
+  const searchTerm = formData.get('location');
+  
+  if (searchTerm.length === 0) {
     // User forgot to enter a search term
     return {
       status: API_STATUS.FAIL,
@@ -201,7 +202,7 @@ const fetchWeatherBySearchString = async (previousState, formData) => {
     }
   }
 
-  const geoCodeData = await fetchGeocodeData(searchString);
+  const geoCodeData = await utils.fetchGeocodeData(searchTerm);
 
   if (geoCodeData.status === API_STATUS.FAIL) {
     return geoCodeData;
@@ -212,7 +213,7 @@ const fetchWeatherBySearchString = async (previousState, formData) => {
     address: geoCodeData.address
   }
 
-  const weatherData = await fetchWeatherData(geoCodeData.latLong);
+  const weatherData = await utils.fetchWeatherData(geoCodeData.latLong);
 
   return {
     ...data,
@@ -221,7 +222,7 @@ const fetchWeatherBySearchString = async (previousState, formData) => {
 }
 
 const fetchWeatherByLocation = async () => {
-  const geoLocationData = await fetchGeolocationData();
+  const geoLocationData = await utils.fetchGeolocationData();
 
   if (geoLocationData.status === API_STATUS.FAIL) {
     return geoLocationData;
@@ -232,14 +233,13 @@ const fetchWeatherByLocation = async () => {
     address: 'your location'
   }
 
-  const weatherData = await fetchWeatherData(geoLocationData.latLong);
+  const weatherData = await utils.fetchWeatherData(geoLocationData.latLong);
 
   return {
     ...data,
     ...weatherData
   }
 }
-
 
 const friendlyTimeString = timeString => {
   const timeRegex = /T\d{2}/;
@@ -269,10 +269,11 @@ const abbreviateIfTwoWords = name => {
 
 const utils = {
   fetchJson,
+  fetchGeolocationData,
   fetchGeocodeData,
   fetchWeatherData,
   fetchWeatherByLocation,
-  fetchWeatherBySearchString,
+  fetchWeatherBySearchTerm,
   friendlyTimeString,
   abbreviateIfTwoWords
 }
