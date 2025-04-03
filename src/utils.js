@@ -6,24 +6,35 @@ const fetchJson = async url => {
 
   return {response, json};
 }
-
-const fetchWeatherByLocation = async (previousState, formData) => {
-  const searchString = formData.get('location');
-  if (searchString.length === 0) {
-    // User forgot to enter a search term
-    return {
-      status: API_STATUS.FAIL,
-      failedOn: API_STATUS.FAILED_ON.GEOCODE,
-      reason: API_STATUS.FAILURE_TYPE.BAD_REQUEST
+const fetchGeolocationData = async () => {
+  return new Promise((resolve, reject) => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(location => {
+        resolve({
+          latLong: `${location.coords.latitude},${location.coords.longitude}`
+        })
+      }, err => {
+        console.log(err);
+        resolve({
+          status: API_STATUS.FAIL,
+          failedOn: API_STATUS.FAILED_ON.GEOLOCATION,
+          reason: API_STATUS.FAILURE_TYPE.MISCELLANEOUS
+        })
+      });
+    } else {
+      resolve({
+        status: API_STATUS.FAIL,
+        failedOn: API_STATUS.FAILED_ON.GEOLOCATION,
+        reason: API_STATUS.FAILURE_TYPE.UNAVAILABLE
+      })
     }
-  }
+  })
+  
+}
 
-  const weatherData = {
-    status: API_STATUS.OK // Default to OK status; can downgrade as needed
-  };
+const fetchGeocodeData = async searchString => {
+  let data = {}
 
-  // Get lat/long from geocode API
-  let latLong;
   try {
     const geo = await utils.fetchJson(`${GEOCODE_API_URL}?address=${searchString}&key=${API_KEY}`);
 
@@ -57,19 +68,27 @@ const fetchWeatherByLocation = async (previousState, formData) => {
     }
 
     // No errors, keep going
-    weatherData.address = geo.json.results[0].formatted_address;
-    latLong = `${geo.json.results[0].geometry.location.lat},${geo.json.results[0].geometry.location.lng}`;
+    data = {
+      address: geo.json.results[0].formatted_address,
+      latLong: `${geo.json.results[0].geometry.location.lat},${geo.json.results[0].geometry.location.lng}`
+    }
   } catch(err) {
     // In case something goes wrong with the parsing, or something else we didn't already catch
     return {
-      ...weatherData,
+      ...data,
       status: API_STATUS.FAIL,
       failedOn: API_STATUS.FAILED_ON.GEOCODE,
       reason: API_STATUS.FAILURE_TYPE.MISC
     }
-  }   
+  }
 
-    // Get forecast APIs URL(s) from main weather API
+  return data;
+}
+
+const fetchWeatherData = async latLong => {
+  let data = {};
+
+  // Get forecast APIs URL(s) from main weather API
   let forecast, forecastHourly;
   try {
     const weather = await utils.fetchJson(`${WEATHER_API_URL}${latLong}`);
@@ -77,7 +96,7 @@ const fetchWeatherByLocation = async (previousState, formData) => {
     // Check for identifiable issues with the weather API request or response
     if (weather.json.title === 'Invalid Parameter') {
       return {
-        ...weatherData,
+        ...ImageData,
         status: API_STATUS.FAIL,
         failedOn: API_STATUS.FAILED_ON.WEATHER,
         reason: API_STATUS.FAILURE_TYPE.BAD_REQUEST
@@ -87,7 +106,7 @@ const fetchWeatherByLocation = async (previousState, formData) => {
     // It didn't work, but we just don't know why
     if (!weather.response.ok) {
       return {
-        ...weatherData,
+        ...data,
         status: API_STATUS.FAIL,
         failedOn: API_STATUS.FAILED_ON.WEATHER,
         reason: API_STATUS.FAILURE_TYPE.MISC
@@ -100,7 +119,7 @@ const fetchWeatherByLocation = async (previousState, formData) => {
   } catch(err) {
     // In case something goes wrong with the parsing, or something else we didn't already catch
     return {
-      ...weatherData,
+      ...data,
       status: API_STATUS.FAIL,
       failedOn: API_STATUS.FAILED_ON.WEATHER,
       reason: API_STATUS.FAILURE_TYPE.MISC
@@ -114,18 +133,18 @@ const fetchWeatherByLocation = async (previousState, formData) => {
 
     if (!hourly.response.ok || hourly.json.title === 'Not Found') {
       // If anything has gone wrong, we might still be able to use the daily forecast, so don't bail yet
-      weatherData.status = API_STATUS.MIXED;
-      weatherData.hourly = API_STATUS.ERROR;
-      weatherData.reason = API_STATUS.FAILURE_TYPE.UNKONWN;
+      data.status = API_STATUS.MIXED;
+      data.hourly = API_STATUS.ERROR;
+      data.reason = API_STATUS.FAILURE_TYPE.UNKONWN;
     } else {
       // All good
-      weatherData.hourly = hourly.json.properties;
+      data.hourly = hourly.json.properties;
     }
   } catch(err) {
     // Might still be able to use the daily forecast even if this fails
-    weatherData.status = API_STATUS.MIXED;
-    weatherData.hourly = API_STATUS.ERROR;
-    weatherData.reason = API_STATUS.FAILURE_TYPE.UNKONWN;
+    data.status = API_STATUS.MIXED;
+    data.hourly = API_STATUS.ERROR;
+    data.reason = API_STATUS.FAILURE_TYPE.UNKONWN;
   }
   
   // Get daily forecast data from forecast APIs
@@ -135,7 +154,7 @@ const fetchWeatherByLocation = async (previousState, formData) => {
 
     if (!daily.response.ok || daily.json.title === 'Not Found') {
       // If anything has gone wrong, we might still be able to use hourly, so don't bail yet
-      if (weatherData.status === API_STATUS.MIXED) {
+      if (data.status === API_STATUS.MIXED) {
         // Oh ok, the hourly forecast piece has already failed too, so we've got nothing; just gracefail
         return {
           status: API_STATUS.FAIL,
@@ -145,15 +164,15 @@ const fetchWeatherByLocation = async (previousState, formData) => {
       }
 
       // Hourly has probably succeeded, so just update the daily portion and move on
-      weatherData.status = API_STATUS.MIXED;
-      weatherData.daily = API_STATUS.ERROR;
-      weatherData.reason = API_STATUS.FAILURE_TYPE.MISC;
+      data.status = API_STATUS.MIXED;
+      data.daily = API_STATUS.ERROR;
+      data.reason = API_STATUS.FAILURE_TYPE.MISC;
     } else {
       // All good
-      weatherData.daily = daily.json.properties
+      data.daily = daily.json.properties
     }
   } catch(err) {
-    if (weatherData.hourly === API_STATUS.ERROR) {
+    if (data.hourly === API_STATUS.ERROR) {
       // Both forecast calls have failed, so we don't really have anything at all
       return {
         status: API_STATUS.FAIL,
@@ -163,13 +182,64 @@ const fetchWeatherByLocation = async (previousState, formData) => {
     }
 
     // Daily forecast has failed, but we still have hourly
-    weatherData.status = API_STATUS.MIXED;
-    weatherData.daily = API_STATUS.ERROR;
-    weatherData.reason = API_STATUS.FAILURE_TYPE.MISC;
+    data.status = API_STATUS.MIXED;
+    data.daily = API_STATUS.ERROR;
+    data.reason = API_STATUS.FAILURE_TYPE.MISC;
   }
 
-  return weatherData;
+  return data;
 }
+
+const fetchWeatherBySearchString = async (previousState, formData) => {
+  const searchString = formData.get('location');
+  if (searchString.length === 0) {
+    // User forgot to enter a search term
+    return {
+      status: API_STATUS.FAIL,
+      failedOn: API_STATUS.FAILED_ON.GEOCODE,
+      reason: API_STATUS.FAILURE_TYPE.BAD_REQUEST
+    }
+  }
+
+  const geoCodeData = await fetchGeocodeData(searchString);
+
+  if (geoCodeData.status === API_STATUS.FAIL) {
+    return geoCodeData;
+  }
+
+  let data = {
+    status: API_STATUS.OK,
+    address: geoCodeData.address
+  }
+
+  const weatherData = await fetchWeatherData(geoCodeData.latLong);
+
+  return {
+    ...data,
+    ...weatherData
+  }
+}
+
+const fetchWeatherByLocation = async () => {
+  const geoLocationData = await fetchGeolocationData();
+
+  if (geoLocationData.status === API_STATUS.FAIL) {
+    return geoLocationData;
+  }
+
+  let data = {
+    status: API_STATUS.OK,
+    address: 'your location'
+  }
+
+  const weatherData = await fetchWeatherData(geoLocationData.latLong);
+
+  return {
+    ...data,
+    ...weatherData
+  }
+}
+
 
 const friendlyTimeString = timeString => {
   const timeRegex = /T\d{2}/;
@@ -199,7 +269,10 @@ const abbreviateIfTwoWords = name => {
 
 const utils = {
   fetchJson,
+  fetchGeocodeData,
+  fetchWeatherData,
   fetchWeatherByLocation,
+  fetchWeatherBySearchString,
   friendlyTimeString,
   abbreviateIfTwoWords
 }

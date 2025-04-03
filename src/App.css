@@ -78,7 +78,6 @@ body {
 }
 
 .logo-lookup button {
-  width: 104px;
   font-size: 1rem;
   background-color: #FF8157;
   font-family: "Nunito", sans-serif;
@@ -88,17 +87,23 @@ body {
   border-radius: 8px;
   padding: 3px 12px;
   margin-left: 10px;
+  cursor: pointer;
 }
 
-.lookup-form input {
-  width: calc(100% - 150px);
+.lookup-form-container form {
+  width: 100%;
+  display: flex;
+  flex-flow: row nowrap;
+}
+
+.lookup-form-container input {
   font-size: 1rem;
   background-color: #000;
   color: #FF8157;
   border: 2px solid #494C59;
   border-radius: 8px;
   padding: 4px 8px 4px 8px;
-  margin-right: 10px;
+  flex-grow: 2;
 }
 
 .lookup-form-error {

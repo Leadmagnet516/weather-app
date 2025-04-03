@@ -10,6 +10,7 @@ export const API_STATUS = {
   MIXED: 'Mixed',
   FAILED_ON: {
     GEOCODE: 'Geocode',
+    GEOLOCATION: 'Geolocation',
     WEATHER: 'Weather',
     FORECAST: 'Forecast',
     DAILY: 'Daily',
@@ -18,7 +19,8 @@ export const API_STATUS = {
   FAILURE_TYPE: {
     BAD_REQUEST: 'BadRequest',
     NO_RESULTS: 'NoResults',
-    MISC: 'Miscellaneous'
+    MISC: 'Miscellaneous',
+    UNAVAILABLE: 'Unavailable'
   }
 }
 

@@ -72,35 +72,35 @@ const mockNoResultsData = {
 }
 
 describe('utils', () => {
-  describe('fetchWeatherByLocation', () => {
-    test(`fetchWeatherByLocation calls fetchJson with the geo API url`, async () => {
+  describe('fetchWeatherBySearchString', () => {
+    test(`fetchWeatherBySearchString calls fetchJson with the geo API url`, async () => {
       const fetchJsonSpy = jest.spyOn(utils, 'fetchJson');
-      await waitFor(() => utils.fetchWeatherByLocation({}, mockFormData));
+      await waitFor(() => utils.fetchWeatherBySearchString({}, mockFormData));
       expect(fetchJsonSpy.mock.calls).toContainEqual([expect.stringContaining(GEOCODE_API_URL)])
     })
   
-    test(`fetchWeatherByLocation calls fetchJson with the main weather API url`, async () => {
+    test(`fetchWeatherBySearchString calls fetchJson with the main weather API url`, async () => {
       const fetchJsonSpy = jest.spyOn(utils, 'fetchJson').mockReturnValue(mockGeoData);
-      await waitFor(() => utils.fetchWeatherByLocation({}, mockFormData));
+      await waitFor(() => utils.fetchWeatherBySearchString({}, mockFormData));
       expect(fetchJsonSpy.mock.calls).toContainEqual([expect.stringContaining(WEATHER_API_URL)])
     })
   
-    test(`fetchWeatherByLocation calls fetchJson with the strings from the weather API response`, async () => {
+    test(`fetchWeatherBySearchString calls fetchJson with the strings from the weather API response`, async () => {
       const fetchJsonSpy = jest.spyOn(utils, 'fetchJson')
         .mockReturnValueOnce(mockGeoData)
         .mockReturnValueOnce(mockWeatherData)
-      await waitFor(() => utils.fetchWeatherByLocation({}, mockFormData));
+      await waitFor(() => utils.fetchWeatherBySearchString({}, mockFormData));
       expect(fetchJsonSpy.mock.calls).toContainEqual(['forecast url']);
       expect(fetchJsonSpy.mock.calls).toContainEqual(['hourly forecast url']);
     })
   
-    test(`fetchWeatherByLocation returns an object combining the [properties] attribute from both forecast responses`, async () => {
+    test(`fetchWeatherBySearchString returns an object combining the [properties] attribute from both forecast responses`, async () => {
       jest.spyOn(utils, 'fetchJson')
         .mockReturnValueOnce(mockGeoData)
         .mockReturnValueOnce(mockWeatherData)
         .mockReturnValueOnce(mockForecastData)
         .mockReturnValueOnce(mockForecastData)
-      const weatherData = await waitFor(() => utils.fetchWeatherByLocation({}, mockFormData));
+      const weatherData = await waitFor(() => utils.fetchWeatherBySearchString({}, mockFormData));
       expect(weatherData).toStrictEqual({
         address: 'Pantsville, OH',
         status: 'Ok',
@@ -113,22 +113,22 @@ describe('utils', () => {
       })
     })
 
-    test(`fetchWeatherByLocation insta-fails on empty form data`, async () => {
-      const weatherData = await waitFor(() => utils.fetchWeatherByLocation({}, mockEmptyFormData));
+    test(`fetchWeatherBySearchString insta-fails on empty form data`, async () => {
+      const weatherData = await waitFor(() => utils.fetchWeatherBySearchString({}, mockEmptyFormData));
       expect(weatherData.status).toBe('Fail');
       expect(weatherData.reason).toBe('BadRequest');
     })
 
-    test(`fetchWeatherByLocation reports when the geocode API call returns no results`, async () => {
+    test(`fetchWeatherBySearchString reports when the geocode API call returns no results`, async () => {
       jest.spyOn(utils, 'fetchJson').mockReturnValue(mockNoResultsData)
-      const weatherData = await waitFor(() => utils.fetchWeatherByLocation({}, mockFormData));
+      const weatherData = await waitFor(() => utils.fetchWeatherBySearchString({}, mockFormData));
       expect(weatherData.status).toBe('Fail');
       expect(weatherData.reason).toBe('NoResults');
     })
     
-     test(`fetchWeatherByLocation surfaces a miscellaneous error when attempting to parse invalid data`, async () => {
+     test(`fetchWeatherBySearchString surfaces a miscellaneous error when attempting to parse invalid data`, async () => {
       jest.spyOn(utils, 'fetchJson').mockReturnValue(mockInvalidData)
-      const weatherData = await waitFor(() => utils.fetchWeatherByLocation({}, mockFormData));
+      const weatherData = await waitFor(() => utils.fetchWeatherBySearchString({}, mockFormData));
       expect(weatherData.status).toBe('Fail');
       expect(weatherData.reason).toBe('Miscellaneous');
     })
