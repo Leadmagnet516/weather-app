@@ -19,7 +19,7 @@ body {
 
 .scrollable {
   overflow-x: scroll;
-  scrollbar-color: rgba(255, 255, 255, .5) rgba(0, 0, 0, 0) ;
+  scrollbar-color: rgba(255, 255, 255, .5) rgba(0, 0, 0, 0);
   scrollbar-width: thin;
   scrollbar-gutter:initial;
 }
@@ -32,6 +32,7 @@ body {
   gap: 20px;
 }
 
+/* LOGO & LOOKUP SECTION */
 .logo-lookup {
   max-width: 628px;
   width: 50%;
@@ -77,6 +78,7 @@ body {
   margin-right: 10px;
 }
 
+/* CURRENT CONDITIONS */
 .current-conditions {
   width: 40%;
   position: relative;
@@ -100,9 +102,22 @@ body {
   top: 54px;
 }
 
+/* FORECAST */
 .forecast {
   margin-top: 60px;
   display: block;
+}
+
+.forecast-heading {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.forecast-heading h2 {
+  margin-bottom: 0;
 }
 
 .forecast ul {
@@ -116,17 +131,20 @@ body {
 }
 
 .forecast-item {
-/*   display: flex;
-  flex-direction: column;
-  justify-content: space-between; */
   position: relative;
   padding: 20px 10px 20px 10px;
   border-radius: 15px;
   border: 2px solid #7DA2E8;
   width: 200px;
-  height: 260px;
+  height: 230px;
   text-align: center;
   overflow: hidden;
+  transition: width ease-out .5s;
+  cursor: pointer;
+}
+
+.forecast-item.expanded {
+  width: 500px;
 }
 
 .forecast-item-heading {
@@ -139,20 +157,34 @@ body {
 }
 
 .forecast-item .temperature-display {
-  position: absolute;
   width: 100%;
-  top: 92px;
+  position: absolute;
+  top: 64px;
   left: 0px;
+  transition: top ease-out .5s;
+}
+
+.forecast-item.expanded .temperature-display {
+  top: 52px;
 }
 
 .forecast-item-desc {
+  width: 180px;
   position: absolute;
-  top: 200px;
+  top: 164px;
   left: 20px;
-  width: calc(100% - 40px);
-  vertical-align: middle;
+  transition: opacity ease-out .5s;
 }
 
+.forecast-item-detail {
+  width: 480px;
+  position: absolute;
+  top: 136px;
+  left: 20px;
+  transition: opacity ease-out .5s;
+}
+
+/* TEMPERATURE DISPLAY */
 .temperature-display {
   padding: 0;
   margin: 0;
@@ -168,7 +200,7 @@ body {
 }
 
 .temperature-unit {
-  font-size: .5em ;
+  font-size: .5em;
   vertical-align: super;
   color: #fff;
 }

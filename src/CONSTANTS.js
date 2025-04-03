@@ -34,3 +34,5 @@ export const MSG_ERROR = {
   DAILY: 'There was a problem getting the forecast',
   HOURLY: 'There was a problem getting the hourly forecast'
 }
+
+export const EVENT_ITEM_EXPANDED = 'EventItemExpanded';

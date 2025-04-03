@@ -82,10 +82,28 @@ const friendlyTimeString = timeString => {
   return `${hour}${meridian}`;
 }
 
+const abbreviations = {
+  Sunday: 'Sun.',
+  Monday: 'Mon.',
+  Tuesday: 'Tues.',
+  Wednesday: 'Wed.',
+  Thursday: 'Thurs.',
+  Friday: 'Fri.',
+  Saturday: 'Sat.'
+}
+
+const abbreviateIfTwoWords = name => {
+  const words = name.split(' ');
+  if (words.length !== 2 || !abbreviations[words[0]]) return name;
+
+  return `${abbreviations[words[0]]} ${words[1]}`;
+}
+
 const utils = {
   fetchJson,
   fetchWeatherByLocation,
-  friendlyTimeString
+  friendlyTimeString,
+  abbreviateIfTwoWords
 }
 
 export default utils;

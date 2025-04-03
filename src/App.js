@@ -10,7 +10,7 @@ import {
   MSG_LOADING,
   MSG_ERROR
  } from './CONSTANTS';
-const { friendlyTimeString } = utils;
+const { abbreviateIfTwoWords, friendlyTimeString } = utils;
 
 const DEFAULT_WEATHER = {
   temp: '',
@@ -68,9 +68,10 @@ export default function App() {
       setDailyForecast(() => {
         const dailyArray = daily.periods.map(period => {
           return {
-            name: period.name,
+            name: abbreviateIfTwoWords(period.name),
             temp: period.temperature,
-            desc: period.shortForecast
+            desc: period.shortForecast,
+            detail: period.detailedForecast
           }
         })
         return dailyArray;
